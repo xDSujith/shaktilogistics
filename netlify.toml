@@ -1,6 +1,6 @@
 [build]
   base = "web-hub"
-  publish = "../landing-page"
+  publish = "landing-page"
   functions = "netlify/functions"
   command = "npm run build"
 
