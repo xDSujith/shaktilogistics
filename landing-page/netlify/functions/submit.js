@@ -2,6 +2,26 @@ const ALLOWED_ORIGINS = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGIN
 const ENDPOINT_URL = process.env.FORM_ENDPOINT_URL || '';
 const REQUIRED = ['name', 'steamUrl', 'timezone', 'experience', 'whyJoin'];
 
+// In-memory rate limiter (best-effort; not persistent across cold starts)
+const WINDOW_MS = 15 * 60 * 1000;
+const MAX_REQUESTS = 5;
+const rateMap = new Map();
+
+function checkRateLimit(ip) {
+  const now = Date.now();
+  const entry = rateMap.get(ip);
+  if (!entry || now - entry.windowStart > WINDOW_MS) {
+    rateMap.set(ip, { windowStart: now, count: 1 });
+    return { allowed: true, remaining: MAX_REQUESTS - 1, resetTime: now + WINDOW_MS };
+  }
+  entry.count += 1;
+  if (entry.count > MAX_REQUESTS) {
+    const retryAfter = Math.ceil((entry.windowStart + WINDOW_MS - now) / 1000);
+    return { allowed: false, remaining: 0, retryAfter };
+  }
+  return { allowed: true, remaining: MAX_REQUESTS - entry.count, resetTime: entry.windowStart + WINDOW_MS };
+}
+
 exports.handler = async (event) => {
   if (event.httpMethod === 'OPTIONS') {
     return {
@@ -17,6 +37,26 @@ exports.handler = async (event) => {
 
   if (event.httpMethod !== 'POST') {
     return { statusCode: 405, body: JSON.stringify({ error: 'Method not allowed' }) };
+  }
+
+  const ip = event.headers['x-nf-client-connection-ip']
+    || event.headers['x-forwarded-for']?.split(',')[0]?.trim()
+    || event.headers['client-ip']
+    || 'unknown';
+
+  const rateCheck = checkRateLimit(ip);
+  if (!rateCheck.allowed) {
+    return {
+      statusCode: 429,
+      headers: {
+        'Content-Type': 'application/json',
+        'Retry-After': String(rateCheck.retryAfter),
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+      body: JSON.stringify({ error: 'Too many requests. Try again later.' }),
+    };
   }
 
   const origin = event.headers.origin || '';
