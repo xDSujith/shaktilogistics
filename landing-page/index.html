@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Shakti Logistics — Join the Fleet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --bg-primary: #07080a;
+    --bg-secondary: #0f1115;
+    --bg-card: #16181e;
+    --bg-elevated: #1c1f26;
+    --border: #262a33;
+    --border-light: #323842;
+    --text-primary: #e8eaed;
+    --text-secondary: #9aa0a8;
+    --text-muted: #5c616b;
+    --accent: #f59e0b;
+    --accent-dim: #a36a00;
+    --accent-glow: rgba(245, 158, 11, .12);
+    --danger: #ef4444;
+    --danger-bg: rgba(239, 68, 68, .1);
+    --success: #22c55e;
+    --success-bg: rgba(34, 197, 94, .1);
+    --font: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-display: 'Plus Jakarta Sans', 'Inter', sans-serif;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: var(--font);
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--accent); color: #000; }
+
+  .container { max-width: 1120px; margin: 0 auto; padding: 0 24px; }
+  .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 28px; border-radius: 8px;
+    font-family: var(--font); font-size: .95rem; font-weight: 600;
+    cursor: pointer; border: none; text-decoration: none;
+    transition: background .2s, transform .15s, box-shadow .2s;
+  }
+  .btn:active { transform: scale(.97); }
+  .btn-primary { background: var(--accent); color: #0f1115; }
+  .btn-primary:hover { background: #eab308; box-shadow: 0 0 24px var(--accent-glow); }
+  .btn-primary:disabled { opacity: .5; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-outline { background: transparent; color: var(--text-primary); border: 1px solid var(--border); }
+  .btn-outline:hover { border-color: var(--accent); color: var(--accent); }
+
+  .section { padding: 80px 0; }
+  .section-label {
+    display: inline-block;
+    font-size: .7rem; font-weight: 600; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 12px;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 2.25rem; font-weight: 800;
+    margin-bottom: 16px;
+  }
+  .section-desc {
+    color: var(--text-secondary);
+    max-width: 600px;
+    font-size: 1.05rem;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeOut { from { opacity: 1; transform: translateY(0); } to { opacity: 0; transform: translateY(-8px); } }
+
+  .spinner {
+    width: 16px; height: 16px; border: 2px solid rgba(0,0,0,.2); border-top-color: #0f1115;
+    border-radius: 50%; animation: spin .6s linear infinite; flex-shrink: 0;
+  }
+
+  /* header */
+  .header {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 16px 0;
+    background: rgba(7,8,10,.85);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid transparent;
+    transition: border-color .3s;
+  }
+  .header.scrolled { border-color: var(--border); }
+  .header .container {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .header-brand {
+    display: flex; align-items: center; gap: 10px;
+    font-family: var(--font-display); font-weight: 800; font-size: 1.15rem;
+    color: var(--text-primary); text-decoration: none;
+  }
+  .header-brand svg { flex-shrink: 0; }
+  .header-nav { display: flex; align-items: center; gap: 24px; }
+  .header-nav a {
+    color: var(--text-secondary); text-decoration: none;
+    font-size: .875rem; font-weight: 500;
+    transition: color .2s;
+  }
+  .header-nav a:hover { color: var(--text-primary); }
+
+  /* hero */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; overflow: hidden;
+    padding: 100px 0 60px;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background:
+      radial-gradient(ellipse 70% 60% at 50% 30%, rgba(245,158,11,.06) 0%, transparent 70%),
+      radial-gradient(ellipse 50% 50% at 80% 80%, rgba(245,158,11,.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-grid { position: absolute; inset: 0; overflow: hidden; pointer-events: none; }
+  .hero-grid::after {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 60% 50% at 50% 40%, black 20%, transparent 70%);
+    -webkit-mask-image: radial-gradient(ellipse 60% 50% at 50% 40%, black 20%, transparent 70%);
+  }
+  .hero-content { position: relative; text-align: center; max-width: 720px; }
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 16px; border-radius: 100px;
+    background: var(--accent-glow); border: 1px solid rgba(245,158,11,.2);
+    color: var(--accent); font-size: .78rem; font-weight: 500;
+    margin-bottom: 24px;
+  }
+  .hero h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.8rem, 7vw, 5rem);
+    font-weight: 800; line-height: 1.08;
+    margin-bottom: 20px;
+  }
+  .hero h1 span { color: var(--accent); }
+  .hero-tagline {
+    font-size: 1.15rem; color: var(--text-secondary);
+    margin-bottom: 36px; max-width: 520px; margin-inline: auto;
+  }
+  .hero-actions { display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap; }
+  .hero-road {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent-dim), var(--accent), var(--accent-dim), transparent);
+    opacity: .3;
+  }
+
+  /* about */
+  .about { background: var(--bg-secondary); }
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+    margin-top: 40px;
+  }
+  .about-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .stat-card {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px; text-align: center;
+  }
+  .stat-card .num { font-family: var(--font-display); font-size: 2rem; font-weight: 800; color: var(--accent); }
+  .stat-card .label { font-size: .82rem; color: var(--text-muted); margin-top: 4px; }
+
+  /* rules */
+  .rules-list {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+    margin-top: 32px; list-style: none;
+  }
+  .rules-list li {
+    display: flex; align-items: flex-start; gap: 12px;
+    padding: 16px 20px; background: var(--bg-card); border-radius: 10px;
+    border: 1px solid var(--border);
+    font-size: .9rem; color: var(--text-secondary);
+  }
+  .rules-list li::before {
+    content: '◆'; color: var(--accent); font-size: .6rem;
+    margin-top: 5px; flex-shrink: 0;
+  }
+  .rules-footnote { margin-top: 24px; font-size: .85rem; color: var(--text-muted); }
+
+  /* apply */
+  .apply { background: var(--bg-secondary); }
+  .apply-wrap {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 48px;
+    margin-top: 40px; align-items: start;
+  }
+  .apply-intro p { color: var(--text-secondary); margin-bottom: 16px; }
+  .apply-intro .perks { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .apply-intro .perks li {
+    display: flex; align-items: center; gap: 10px;
+    font-size: .9rem; color: var(--text-secondary);
+  }
+  .apply-intro .perks li::before {
+    content: ''; width: 6px; height: 6px; border-radius: 50%;
+    background: var(--accent); flex-shrink: 0;
+  }
+
+  .form-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 32px;
+    transition: opacity .3s;
+  }
+  .form-card h3 { font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 24px; }
+
+  .form-group { margin-bottom: 18px; }
+  .form-group label {
+    display: block; font-size: .85rem; font-weight: 500;
+    margin-bottom: 6px; color: var(--text-secondary);
+  }
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%; padding: 10px 14px; border-radius: 8px;
+    background: var(--bg-elevated); border: 1px solid var(--border);
+    color: var(--text-primary); font-family: var(--font); font-size: .9rem;
+    transition: border-color .2s, box-shadow .2s;
+    outline: none;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus { border-color: var(--accent); }
+  .form-group input[aria-invalid="true"],
+  .form-group select[aria-invalid="true"],
+  .form-group textarea[aria-invalid="true"] { border-color: var(--danger); box-shadow: 0 0 0 1px var(--danger); }
+  .form-group textarea { resize: vertical; min-height: 90px; }
+  .form-group select { appearance: none; cursor: pointer; }
+  .form-group select option { background: var(--bg-elevated); }
+
+  .field-error {
+    font-size: .78rem; color: var(--danger);
+    margin-top: 4px; display: none; animation: fadeIn .2s;
+  }
+  .field-error.visible { display: block; }
+
+  .form-alert {
+    padding: 12px 16px; border-radius: 8px; margin-bottom: 20px;
+    font-size: .85rem; display: none; animation: fadeIn .25s;
+  }
+  .form-alert.visible { display: flex; align-items: flex-start; gap: 8px; }
+  .form-alert--error { background: var(--danger-bg); border: 1px solid rgba(239,68,68,.2); color: #fca5a5; }
+  .form-alert--success { background: var(--success-bg); border: 1px solid rgba(34,197,94,.2); color: #86efac; }
+
+  .form-success {
+    display: none; animation: fadeIn .35s;
+    text-align: center; padding: 32px 16px;
+  }
+  .form-success.visible { display: block; }
+  .form-success-icon {
+    width: 48px; height: 48px; border-radius: 50%;
+    background: var(--success-bg); border: 1px solid rgba(34,197,94,.2);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 16px;
+  }
+  .form-success h4 { font-family: var(--font-display); font-size: 1.1rem; margin-bottom: 8px; }
+  .form-success p { color: var(--text-muted); font-size: .9rem; max-width: 360px; margin: 0 auto; }
+
+  /* honeypot — hidden from human eyes but visible to bots */
+  .hp-field {
+    position: absolute; left: -9999px; top: -9999px; opacity: 0; height: 0; overflow: hidden;
+  }
+
+  /* tracker */
+  .tracker-section { padding: 80px 0; }
+  .tracker-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 16px; padding: 48px;
+    text-align: center; position: relative; overflow: hidden;
+    opacity: .55; cursor: default; user-select: none;
+    transition: opacity .3s;
+  }
+  .tracker-card:hover { opacity: .65; }
+  .tracker-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 4px 14px; border-radius: 100px;
+    background: var(--bg-elevated); border: 1px solid var(--border-light);
+    color: var(--text-muted); font-size: .75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .5px;
+    margin-bottom: 20px;
+  }
+  .tracker-card h2 {
+    font-family: var(--font-display); font-size: 1.5rem; font-weight: 700;
+    margin-bottom: 8px;
+  }
+  .tracker-card p { color: var(--text-muted); font-size: .9rem; max-width: 440px; margin: 0 auto 24px; }
+  .tracker-dummy {
+    display: inline-flex; align-items: center; gap: 12px;
+    padding: 12px 24px; border-radius: 8px;
+    background: var(--bg-elevated); border: 1px dashed var(--border-light);
+    color: var(--text-muted); font-size: .82rem;
+    cursor: not-allowed;
+  }
+  .tracker-card::after {
+    content: ''; position: absolute; top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--accent-dim), transparent);
+    opacity: .15;
+  }
+
+  /* footer */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding: 32px 0;
+    text-align: center; font-size: .82rem; color: var(--text-muted);
+  }
+  .footer a { color: var(--text-secondary); text-decoration: none; }
+  .footer a:hover { color: var(--accent); }
+
+  @media (max-width: 768px) {
+    .section { padding: 60px 0; }
+    .section-title { font-size: 1.75rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 32px; }
+    .apply-wrap { grid-template-columns: 1fr; gap: 32px; }
+    .rules-list { grid-template-columns: 1fr; }
+    .header-nav { display: none; }
+    .hero h1 { font-size: clamp(2rem, 10vw, 3rem); }
+    .tracker-card { padding: 32px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header" id="header">
+  <div class="container">
+    <a href="#" class="header-brand">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none" aria-hidden="true"><rect x="2" y="6" width="24" height="16" rx="3" stroke="#f59e0b" stroke-width="1.5"/><rect x="5" y="9" width="7" height="4" rx="1" fill="#f59e0b" opacity=".3"/><circle cx="8" cy="20.5" r="2" fill="#f59e0b" opacity=".6"/><circle cx="20" cy="20.5" r="2" fill="#f59e0b" opacity=".6"/></svg>
+      Shakti Logistics
+    </a>
+    <nav class="header-nav">
+      <a href="#about">About</a>
+      <a href="#rules">Rules</a>
+      <a href="#apply">Apply</a>
+      <a href="#tracker">Tracker</a>
+      <a href="#apply" class="btn btn-primary" style="padding:8px 20px;font-size:.82rem">Join Us</a>
+    </nav>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-content container">
+    <div class="hero-badge">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none" aria-hidden="true"><circle cx="6" cy="6" r="3" fill="#f59e0b" opacity=".6"/><circle cx="6" cy="6" r="1.5" fill="#f59e0b"/></svg>
+      Now Recruiting — 62 Drivers Strong
+    </div>
+    <h1>Drive with <span>Shakti</span></h1>
+    <p class="hero-tagline">One Team. One Route. Endless Roads. — Join India's fastest-growing trucking fleet across ETS2 &amp; ATS.</p>
+    <div class="hero-actions">
+      <a href="#apply" class="btn btn-primary">Apply to Join</a>
+      <a href="#about" class="btn btn-outline">Learn More</a>
+    </div>
+  </div>
+  <div class="hero-road"></div>
+</section>
+
+<section class="section about" id="about">
+  <div class="container">
+    <span class="section-label">About</span>
+    <h2 class="section-title">Built by drivers, for drivers</h2>
+    <p class="section-desc">Shakti Logistics unites truckers from across the world — especially India &amp; South Asia — under one disciplined, friendly community. We run weekly convoys, rank drivers by performance, and promote a safe driving culture.</p>
+    <div class="about-grid">
+      <div class="about-stats">
+        <div class="stat-card"><div class="num">62</div><div class="label">Active Drivers</div></div>
+        <div class="stat-card"><div class="num">2</div><div class="label">Supported Games</div></div>
+        <div class="stat-card"><div class="num">ETS2</div><div class="label">Euro Truck Sim 2</div></div>
+        <div class="stat-card"><div class="num">ATS</div><div class="label">American Truck Sim</div></div>
+      </div>
+      <div>
+        <p style="color:var(--text-secondary);margin-bottom:16px">Founded by simulation enthusiasts, Shakti Logistics is built on discipline, teamwork, and respect. Whether you're a casual driver or a hardcore logistician, there's a lane for you.</p>
+        <p style="color:var(--text-secondary)">We use Trucky &amp; VTLog for job tracking, host weekly convoys, and offer growth paths into staff roles — HR, Events, and Media.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="rules">
+  <div class="container">
+    <span class="section-label">Code of the Road</span>
+    <h2 class="section-title">Our rules</h2>
+    <p class="section-desc">Every driver is expected to follow these guidelines to keep the fleet safe and professional.</p>
+    <ul class="rules-list">
+      <li>Follow all official TruckersMP rules at all times.</li>
+      <li>Respect every player — whether a VTC member or not.</li>
+      <li>In-game tag must show <strong>"Shakti Logistics"</strong> with the designated RGB colour.</li>
+      <li>Keep TrucksBook (or compatible tracker) running while driving to log activity.</li>
+      <li>You may only represent Shakti Logistics, not any other VTC, on this account.</li>
+      <li>Report any active TruckersMP ban to staff immediately via Discord.</li>
+      <li>If leaving, inform staff in Discord beforehand.</li>
+      <li>No trolling, ramming, toxic behaviour, or disrespectful conduct.</li>
+    </ul>
+    <p class="rules-footnote">Full rulebook is available in our Discord server. Violations result in staff action.</p>
+  </div>
+</section>
+
+<section class="section apply" id="apply">
+  <div class="container">
+    <span class="section-label">Join the Fleet</span>
+    <h2 class="section-title">Apply to Join</h2>
+    <p class="section-desc">Ready to roll? Fill out the form and a staff member will reach out.</p>
+    <div class="apply-wrap">
+      <div class="apply-intro">
+        <p><strong>Requirements</strong> — Age 15+, valid TruckersMP account, minimum 2 hours in ETS2/ATS, no active bans, must join Discord.</p>
+        <ul class="perks">
+          <li>Weekly &amp; monthly convoy events</li>
+          <li>Active Discord community</li>
+          <li>Custom rank &amp; role progression</li>
+          <li>Media promotions (YouTube, posters, shorts)</li>
+          <li>Staff growth opportunities</li>
+        </ul>
+      </div>
+      <div class="form-card" id="form-card">
+        <h3>Application Form</h3>
+
+        <div class="form-alert form-alert--error" id="form-error" role="alert">
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true" style="flex-shrink:0;margin-top:1px"><circle cx="8" cy="8" r="6" stroke="#fca5a5" stroke-width="1.2"/><path d="M8 5V8.5" stroke="#fca5a5" stroke-width="1.2" stroke-linecap="round"/><circle cx="8" cy="10.5" r=".6" fill="#fca5a5"/></svg>
+          <span id="form-error-msg"></span>
+        </div>
+
+        <form id="apply-form" novalidate>
+          <div class="hp-field" aria-hidden="true">
+            <label for="_hp">Leave this empty</label>
+            <input type="text" id="_hp" name="_hp" tabindex="-1" autocomplete="off">
+          </div>
+
+          <div class="form-group">
+            <label for="name">Full Name (in-game)</label>
+            <input type="text" id="name" name="name" placeholder="e.g. HRSGAMINGHARI" required autocomplete="off">
+            <span class="field-error" id="name-error"></span>
+          </div>
+          <div class="form-group">
+            <label for="steam-url">Steam / TruckersMP Profile URL</label>
+            <input type="url" id="steam-url" name="steamUrl" placeholder="https://truckersmp.com/user/..." required autocomplete="url">
+            <span class="field-error" id="steam-url-error"></span>
+          </div>
+          <div class="form-group">
+            <label for="timezone">Timezone</label>
+            <select id="timezone" name="timezone" required>
+              <option value="" disabled selected>Select your timezone</option>
+              <option value="UTC-12">UTC-12</option>
+              <option value="UTC-11">UTC-11</option>
+              <option value="UTC-10">UTC-10</option>
+              <option value="UTC-9">UTC-9</option>
+              <option value="UTC-8">UTC-8 (PST)</option>
+              <option value="UTC-7">UTC-7 (MST)</option>
+              <option value="UTC-6">UTC-6 (CST)</option>
+              <option value="UTC-5">UTC-5 (EST)</option>
+              <option value="UTC-4">UTC-4</option>
+              <option value="UTC-3">UTC-3</option>
+              <option value="UTC-2">UTC-2</option>
+              <option value="UTC-1">UTC-1</option>
+              <option value="UTC+0">UTC+0 (GMT)</option>
+              <option value="UTC+1">UTC+1 (CET)</option>
+              <option value="UTC+2">UTC+2 (EET)</option>
+              <option value="UTC+3">UTC+3</option>
+              <option value="UTC+4">UTC+4</option>
+              <option value="UTC+5">UTC+5 (IST)</option>
+              <option value="UTC+5:30" selected>UTC+5:30 (India)</option>
+              <option value="UTC+6">UTC+6</option>
+              <option value="UTC+7">UTC+7</option>
+              <option value="UTC+8">UTC+8 (CST China)</option>
+              <option value="UTC+9">UTC+9 (JST)</option>
+              <option value="UTC+10">UTC+10 (AEST)</option>
+              <option value="UTC+11">UTC+11</option>
+              <option value="UTC+12">UTC+12 (NZST)</option>
+            </select>
+            <span class="field-error" id="timezone-error"></span>
+          </div>
+          <div class="form-group">
+            <label for="experience">Truck Sim Experience</label>
+            <select id="experience" name="experience" required>
+              <option value="" disabled selected>Select your experience level</option>
+              <option value="beginner">Beginner — less than 50 hours</option>
+              <option value="casual">Casual — 50–200 hours</option>
+              <option value="intermediate">Intermediate — 200–500 hours</option>
+              <option value="experienced">Experienced — 500–1000 hours</option>
+              <option value="veteran">Veteran — 1000+ hours</option>
+            </select>
+            <span class="field-error" id="experience-error"></span>
+          </div>
+          <div class="form-group">
+            <label for="why-join">Why do you want to join Shakti Logistics?</label>
+            <textarea id="why-join" name="whyJoin" placeholder="Tell us about yourself and what you're looking for in a VTC..." required></textarea>
+            <span class="field-error" id="why-join-error"></span>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="submit-btn" style="width:100%;justify-content:center">
+            <span id="submit-text">Submit Application</span>
+            <span class="spinner" id="submit-spinner" style="display:none"></span>
+          </button>
+          <p style="margin-top:12px;font-size:.78rem;color:var(--text-muted);text-align:center">Your information will be reviewed by our recruitment team.</p>
+        </form>
+
+        <div class="form-success" id="form-success">
+          <div class="form-success-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M7 13L10 16L17 9" stroke="#22c55e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </div>
+          <h4>Application received!</h4>
+          <p>Thanks for applying. A staff member will review your submission and reach out on Discord within 48 hours.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="tracker-section" id="tracker">
+  <div class="container">
+    <div class="tracker-card">
+      <div class="tracker-badge">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true"><circle cx="5" cy="5" r="4" stroke="#5c616b" stroke-width="1"/><path d="M5 2.5V5L6.5 6.5" stroke="#5c616b" stroke-width=".8" stroke-linecap="round"/></svg>
+        Coming Soon
+      </div>
+      <h2>Desktop Tracker</h2>
+      <p>Real-time telemetry overlay for ETS2 &amp; ATS — track fuel, damage, distance, and deliveries directly from the SCS SDK. Native app built with Tauri.</p>
+      <span class="tracker-dummy">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2" y="2" width="12" height="12" rx="2" stroke="#5c616b" stroke-width="1.2"/><path d="M5 8L7 10L11 6" stroke="#5c616b" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Download v0.1.0 — Not yet available
+      </span>
+    </div>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <p>&copy; 2026 <a href="#">Shakti Logistics</a>. All rights reserved. &nbsp;|&nbsp; <a href="https://truckersmp.com/vtc/81650">TruckersMP VTC</a> &nbsp;|&nbsp; <a href="https://discord.gg/vhH2zXmYNt">Discord</a></p>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var header = document.getElementById('header');
+    var ticking = false;
+    window.addEventListener('scroll', function () {
+      if (!ticking) {
+        requestAnimationFrame(function () {
+          header.classList.toggle('scrolled', window.scrollY > 40);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    }, { passive: true });
+
+    var form = document.getElementById('apply-form');
+    var formCard = document.getElementById('form-card');
+    var submitBtn = document.getElementById('submit-btn');
+    var submitText = document.getElementById('submit-text');
+    var submitSpinner = document.getElementById('submit-spinner');
+    var formError = document.getElementById('form-error');
+    var formErrorMsg = document.getElementById('form-error-msg');
+    var formSuccess = document.getElementById('form-success');
+
+    var fields = {
+      name: { el: document.getElementById('name'), error: document.getElementById('name-error'), validate: function (v) { return v.trim().length >= 2 ? '' : 'Name must be at least 2 characters.'; } },
+      'steam-url': { el: document.getElementById('steam-url'), error: document.getElementById('steam-url-error'), validate: function (v) {
+        if (!v.trim()) return 'A profile URL is required.';
+        try { var u = new URL(v); return (u.hostname.includes('truckersmp.com') || u.hostname.includes('steamcommunity.com')) ? '' : 'Must be a TruckersMP or Steam Community URL.'; }
+        catch (_) { return 'Please enter a valid URL (https://...).'; }
+      }},
+      timezone: { el: document.getElementById('timezone'), error: document.getElementById('timezone-error'), validate: function (v) { return v ? '' : 'Please select your timezone.'; } },
+      experience: { el: document.getElementById('experience'), error: document.getElementById('experience-error'), validate: function (v) { return v ? '' : 'Please select your experience level.'; } },
+      'why-join': { el: document.getElementById('why-join'), error: document.getElementById('why-join-error'), validate: function (v) { return v.trim().length >= 10 ? '' : 'Please write at least 10 characters.'; } }
+    };
+
+    function showFieldError(key, msg) {
+      var f = fields[key];
+      if (!f) return;
+      f.el.setAttribute('aria-invalid', 'true');
+      f.error.textContent = msg;
+      f.error.classList.add('visible');
+    }
+
+    function clearFieldError(key) {
+      var f = fields[key];
+      if (!f) return;
+      f.el.removeAttribute('aria-invalid');
+      f.error.textContent = '';
+      f.error.classList.remove('visible');
+    }
+
+    function clearAllFieldErrors() {
+      Object.keys(fields).forEach(clearFieldError);
+    }
+
+    function showFormError(msg) {
+      formErrorMsg.textContent = msg;
+      formError.classList.add('visible');
+    }
+
+    function hideFormError() {
+      formError.classList.remove('visible');
+      formErrorMsg.textContent = '';
+    }
+
+    function validateForm(data) {
+      clearAllFieldErrors();
+      hideFormError();
+      var ok = true;
+      Object.keys(fields).forEach(function (key) {
+        var err = fields[key].validate(data[key] || '');
+        if (err) { showFieldError(key, err); ok = false; }
+      });
+      return ok;
+    }
+
+    function setLoading(loading) {
+      submitBtn.disabled = loading;
+      submitText.style.display = loading ? 'none' : '';
+      submitSpinner.style.display = loading ? '' : 'none';
+    }
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var data = {};
+      Object.keys(fields).forEach(function (key) {
+        data[key] = fields[key].el.value;
+      });
+
+      if (!validateForm(data)) return;
+
+      setLoading(true);
+      hideFormError();
+
+      var honeypot = document.getElementById('_hp').value;
+
+      var payload = {
+        name: data.name.trim(),
+        steamUrl: data['steam-url'].trim(),
+        timezone: data.timezone,
+        experience: data.experience,
+        whyJoin: data['why-join'].trim(),
+        _hp: honeypot,
+        _ts: new Date().toISOString()
+      };
+
+      fetch('/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(function (r) { return r.json().then(function (d) { return { status: r.status, body: d }; }); })
+      .then(function (res) {
+        setLoading(false);
+        if (res.body.success) {
+          form.style.display = 'none';
+          formSuccess.classList.add('visible');
+        } else {
+          showFormError(res.body.error || 'Something went wrong. Please try again.');
+        }
+      })
+      .catch(function () {
+        setLoading(false);
+        showFormError('Network error — please check your connection and try again.');
+      });
+    });
+
+    Object.keys(fields).forEach(function (key) {
+      var el = fields[key].el;
+      el.addEventListener('input', function () { clearFieldError(key); hideFormError(); });
+      el.addEventListener('change', function () { clearFieldError(key); hideFormError(); });
+    });
+  })();
+</script>
+</body>
+</html>

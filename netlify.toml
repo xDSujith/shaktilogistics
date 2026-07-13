@@ -1,0 +1,15 @@
+[build]
+  publish = "landing-page"
+  functions = "landing-page/netlify/functions"
+
+[[redirects]]
+  from = "/submit"
+  to = "/.netlify/functions/submit"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"

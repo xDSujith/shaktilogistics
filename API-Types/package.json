@@ -1,0 +1,58 @@
+{
+  "name": "@truckersmp/api-types",
+  "version": "1.2.1",
+  "description": "Simple type definitions for the TruckersMP API.",
+  "author": "TruckersMP",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TruckersMP/API-Types"
+  },
+  "scripts": {
+    "build": "tsc && run-p esm:*",
+    "esm:traffic": "gen-esm-wrapper traffic/index.js traffic/index.mjs",
+    "esm:v2": "gen-esm-wrapper v2.js v2.mjs && gen-esm-wrapper traffic/v2/index.js traffic/v2/index.mjs && gen-esm-wrapper web/v2/index.js web/v2/index.mjs",
+    "esm:web": "gen-esm-wrapper web/index.js web/index.mjs",
+    "format": "eslint --ext .ts web/ traffic/ --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.62.0",
+    "@typescript-eslint/parser": "^5.62.0",
+    "eslint": "^8.57.0",
+    "gen-esm-wrapper": "^1.1.3",
+    "npm-run-all2": "^7.0.2",
+    "typescript": "^5.7.3"
+  },
+  "exports": {
+    "./v2": {
+      "require": "./v2.js",
+      "import": "./v2.mjs",
+      "types": "./v2.d.ts"
+    },
+    "./web": {
+      "require": "./web/index.js",
+      "import": "./web/index.mjs",
+      "types": "./web/index.d.ts"
+    },
+    "./web/v*": {
+      "require": "./web/v*/index.js",
+      "import": "./web/v*/index.mjs",
+      "types": "./web/v*/index.d.ts"
+    },
+    "./traffic": {
+      "require": "./traffic/index.js",
+      "import": "./traffic/index.mjs",
+      "types": "./traffic/index.d.ts"
+    },
+    "./traffic/v*": {
+      "require": "./traffic/v*/index.js",
+      "import": "./traffic/v*/index.mjs",
+      "types": "./traffic/v*/index.d.ts"
+    }
+  },
+  "files": [
+    "{traffic,web}/**/*.{js,js.map,d.ts,d.ts.map,mjs}",
+    "{globals,v*}.{js,js.map,d.ts,d.ts.map,mjs}"
+  ]
+}
