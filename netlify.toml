@@ -1,10 +1,37 @@
 [build]
-  publish = "landing-page"
-  functions = "landing-page/netlify/functions"
+  base = "web-hub"
+  publish = "../landing-page"
+  functions = "netlify/functions"
+  command = "npm run build"
 
 [[redirects]]
   from = "/submit"
   to = "/.netlify/functions/submit"
+  status = 200
+
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api"
+  status = 200
+
+[[redirects]]
+  from = "/fleet"
+  to = "/.netlify/functions/api"
+  status = 200
+
+[[redirects]]
+  from = "/rules"
+  to = "/.netlify/functions/api"
+  status = 200
+
+[[redirects]]
+  from = "/terms"
+  to = "/.netlify/functions/api"
+  status = 200
+
+[[redirects]]
+  from = "/privacy"
+  to = "/.netlify/functions/api"
   status = 200
 
 [[headers]]
