@@ -1,7 +1,7 @@
 [build]
   base = "web-hub"
   publish = "landing-page"
-  functions = "netlify/functions"
+  functions = "web-hub/netlify/functions"
   command = "npm run build"
 
 [[redirects]]
